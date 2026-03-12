@@ -1,6 +1,8 @@
 # PlatformView Scroll Jank Sample (Add-to-App)
 
-Minimal Add-to-App Flutter sample that reproduces **Android PlatformView scroll jank** on merged platform/UI thread (Flutter 3.41+, TLHC mode).
+Minimal Add-to-App Flutter sample that reproduces **Android PlatformView scroll jank** on merged platform/UI thread (TLHC mode).
+
+Since Flutter 3.38, the platform/UI thread merge opt-out was removed ([PR #174408](https://github.com/flutter/flutter/pull/174408)), making thread merge the only option. This causes `setOffset()` to trigger expensive `setLayoutParams()` → `requestLayout()` → `draw()` serially within `Choreographer#doFrame`, leading to jank when multiple PlatformViews are present.
 
 ## How to run
 
@@ -32,7 +34,7 @@ android/.../
 
 ## Environment
 
-- Flutter 3.41+ (merged platform/UI thread enabled by default)
+- Flutter 3.38+ (platform/UI thread merge opt-out removed)
 - Android physical device
 - PlatformView mode: TLHC (Texture Layer Hybrid Composition)
 - Reproducible with both Impeller and Skia
