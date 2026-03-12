@@ -1,8 +1,8 @@
 # PlatformView Scroll Jank Sample (Add-to-App)
 
-Minimal Add-to-App Flutter sample that reproduces **Android PlatformView scroll jank** on merged platform/UI thread (TLHC mode).
+Minimal Add-to-App Flutter sample that reproduces **Android PlatformView scroll jank** with merged platform/UI threads (TLHC mode).
 
-Since Flutter 3.38, the platform/UI thread merge opt-out was removed ([PR #174408](https://github.com/flutter/flutter/pull/174408)), making thread merge the only option. This causes `setOffset()` to trigger expensive `setLayoutParams()` → `requestLayout()` → `draw()` serially within `Choreographer#doFrame`, leading to jank when multiple PlatformViews are present.
+Since [PR #174408](https://github.com/flutter/flutter/pull/174408) removed the opt-out flag for disabling merged platform/UI threads, merged threads are now always enabled. During scroll, `setOffset()` appears to trigger `setLayoutParams()` → `requestLayout()` → `draw()` serially within `Choreographer#doFrame`, which can lead to jank when multiple PlatformViews are present.
 
 ## How to run
 
@@ -16,7 +16,7 @@ flutter run --profile
 
 ## What this reproduces
 
-A `ListView` with 8 `AndroidView` PlatformViews (simulating ad banners) interleaved with regular Flutter widgets. Scrolling causes visible jank because `setOffset()` triggers an expensive `setLayoutParams()` → `requestLayout()` → `draw()` cycle for every visible PlatformView on every frame.
+A `ListView` with 8 `AndroidView` PlatformViews (simulating ad banners) interleaved with regular Flutter widgets. Scrolling appears to cause jank because `setOffset()` triggers `setLayoutParams()` → `requestLayout()` → `draw()` for every visible PlatformView on every frame.
 
 ## Structure
 
